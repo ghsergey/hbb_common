@@ -456,7 +456,7 @@ pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
             os_version,
             arch,
             device_id,
-            typ,
+            typ: normalize_version_check_type(typ),
         },
         get_version_check_url(),
     )
