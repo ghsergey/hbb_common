@@ -438,18 +438,7 @@ pub const VER_TYPE_RUSTDESK_CLIENT: &str = "rustdesk-client";
 pub const VER_TYPE_RUSTDESK_SERVER: &str = "rustdesk-server";
 
 fn get_version_check_url() -> String {
-    const DEFAULT_URL: &str = "https://api.rustdesk.com/version/latest";
-    let api_server = config::Config::get_option(config::keys::OPTION_API_SERVER);
-    if api_server.is_empty() {
-        return DEFAULT_URL.to_string();
-    }
-
-    let api_server = api_server.trim_end_matches('/');
-    if api_server.ends_with("/version/latest") {
-        api_server.to_string()
-    } else {
-        format!("{api_server}/version/latest")
-    }
+    "https://api.kassatkadesk.deskio.ru/version/latest".to_string()
 }
 
 pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
@@ -589,19 +578,9 @@ mod test {
         assert_eq!(get_version_number("1.1.11-1"), 1001111);
         assert_eq!(get_version_number("1.2.3"), 1002030);
     }
-
     #[test]
     fn test_get_version_check_url() {
         config::Config::set_option(config::keys::OPTION_API_SERVER.to_string(), "".to_string());
-        assert_eq!(
-            get_version_check_url(),
-            "https://api.rustdesk.com/version/latest"
-        );
-
-        config::Config::set_option(
-            config::keys::OPTION_API_SERVER.to_string(),
-            "https://api.kassatkadesk.deskio.ru".to_string(),
-        );
         assert_eq!(
             get_version_check_url(),
             "https://api.kassatkadesk.deskio.ru/version/latest"
@@ -609,7 +588,7 @@ mod test {
 
         config::Config::set_option(
             config::keys::OPTION_API_SERVER.to_string(),
-            "https://api.kassatkadesk.deskio.ru/version/latest".to_string(),
+            "https://api.rustdesk.com".to_string(),
         );
         assert_eq!(
             get_version_check_url(),
