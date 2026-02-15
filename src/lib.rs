@@ -437,9 +437,12 @@ pub struct VersionCheckResponse {
 pub const VER_TYPE_RUSTDESK_CLIENT: &str = "rustdesk-client";
 pub const VER_TYPE_RUSTDESK_SERVER: &str = "rustdesk-server";
 
-pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
-    const URL: &str = "https://api.rustdesk.com/version/latest";
+fn get_version_check_url() -> String {
+    "https://api.kassatkadesk.deskio.ru/version/latest".to_string()
+}
 
+
+pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
     use sysinfo::System;
     let system = System::new();
     let os = system.distribution_id();
@@ -455,7 +458,7 @@ pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
             device_id,
             typ,
         },
-        URL.to_string(),
+        get_version_check_url(),
     )
 }
 
@@ -575,4 +578,12 @@ mod test {
         assert_eq!(get_version_number("1.1.11-1"), 1001111);
         assert_eq!(get_version_number("1.2.3"), 1002030);
     }
+    #[test]
+    fn test_get_version_check_url() {
+        assert_eq!(
+            get_version_check_url(),
+            "https://api.kassatkadesk.deskio.ru/version/latest"
+        );
+    }
+
 }
