@@ -437,9 +437,22 @@ pub struct VersionCheckResponse {
 pub const VER_TYPE_RUSTDESK_CLIENT: &str = "rustdesk-client";
 pub const VER_TYPE_RUSTDESK_SERVER: &str = "rustdesk-server";
 
-pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
-    const URL: &str = "https://api.rustdesk.com/version/latest";
+fn get_version_check_url() -> String {
+    "https://api.kassatkadesk.deskio.ru/version/latest".to_string()
+}
 
+fn normalize_version_check_type(typ: String) -> String {
+    let typ = typ.trim();
+    if typ.is_empty() || typ.ends_with("-client") {
+        VER_TYPE_RUSTDESK_CLIENT.to_string()
+    } else if typ.ends_with("-server") {
+        VER_TYPE_RUSTDESK_SERVER.to_string()
+    } else {
+        typ.to_string()
+    }
+}
+
+pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
     use sysinfo::System;
     let system = System::new();
     let os = system.distribution_id();
@@ -453,9 +466,9 @@ pub fn version_check_request(typ: String) -> (VersionCheckRequest, String) {
             os_version,
             arch,
             device_id,
-            typ,
+            typ: normalize_version_check_type(typ),
         },
-        URL.to_string(),
+        get_version_check_url(),
     )
 }
 
@@ -574,5 +587,32 @@ mod test {
         assert_eq!(get_version_number("1.1.10-1"), 1001101);
         assert_eq!(get_version_number("1.1.11-1"), 1001111);
         assert_eq!(get_version_number("1.2.3"), 1002030);
+    }
+    #[test]
+    fn test_get_version_check_url() {
+        assert_eq!(
+            get_version_check_url(),
+            "https://api.kassatkadesk.deskio.ru/version/latest"
+        );
+    }
+
+    #[test]
+    fn test_normalize_version_check_type() {
+        assert_eq!(
+            normalize_version_check_type("".to_string()),
+            VER_TYPE_RUSTDESK_CLIENT
+        );
+        assert_eq!(
+            normalize_version_check_type("kassatkadesk-client".to_string()),
+            VER_TYPE_RUSTDESK_CLIENT
+        );
+        assert_eq!(
+            normalize_version_check_type("mybrand-server".to_string()),
+            VER_TYPE_RUSTDESK_SERVER
+        );
+        assert_eq!(
+            normalize_version_check_type("custom-agent".to_string()),
+            "custom-agent"
+        );
     }
 }
