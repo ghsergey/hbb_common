@@ -107,7 +107,7 @@ const CHARS: &[char] = &[
 ];
 
 pub const RENDEZVOUS_SERVERS: &[&str] = &["rustdesk.chek-online.ru"];
-pub const RS_PUB_KEY: &str = "XqChgEjZ84b0ISHLI9nivdImOMk8lOkxtCHKs+UuYx4=";
+pub const RS_PUB_KEY: &str = "CrN1hB9w+LjrCXQcEbfsfFaxhCaEtwqGyjHTwa0Ino4=";
 
 pub const RENDEZVOUS_PORT: i32 = 21116;
 pub const RELAY_PORT: i32 = 21117;
